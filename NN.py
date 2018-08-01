@@ -4,6 +4,7 @@ import scikitplot as skplt
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
+from sklearn import metrics
 
 
 def showMatrix(matrix):
@@ -11,7 +12,7 @@ def showMatrix(matrix):
     ax.matshow(matrix, cmap=plt.cm.Blues)
 
     XArr = np.asarray(matrix)
-    if XArr.shape[0]<=50 and XArr.shape[1]<=50:
+    if XArr.shape[0] <= 50 and XArr.shape[1] <= 50:
         for i in range(XArr.shape[1]):
             for j in range(XArr.shape[0]):
                 c = XArr[j, i]
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     with open('data 2/DTraw.json') as js:
         documents = json.load(js)
 
-    #showMatrix(docList)
+    # showMatrix(docList)
 
     # add empty termvec for uncertainty class
     assetList.append([0] * len(assetList[0]))
@@ -61,4 +62,13 @@ if __name__ == "__main__":
     predictions = clf.predict(X_test)
     plt.figure()
     skplt.metrics.plot_confusion_matrix([3, 1, 4, 4, 0, 0, 0, 1, 0, 0], predictions, normalize=True)
+    plt.title('confusion matrix MLP')
+    plt.show()
+
+    cosS = metrics.pairwise.cosine_similarity(np.asarray(docList), np.asarray(assetList))
+    maxCos = np.argmax(cosS, axis=1) + 1
+    cosList = maxCos.tolist()
+    plt.figure()
+    skplt.metrics.plot_confusion_matrix([3, 1, 4, 4, 0, 0, 0, 1, 0, 0], cosList, normalize=True)
+    plt.title('confusion matrix cosinus similarity')
     plt.show()
